@@ -6,7 +6,7 @@
 /*   By: ilel-hla <ilel-hla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 21:28:18 by ilel-hla          #+#    #+#             */
-/*   Updated: 2025/09/09 18:50:47 by ilel-hla         ###   ########.fr       */
+/*   Updated: 2025/09/10 20:43:19 by ilel-hla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ int	read_map(char *file, t_cub *cub)
 
 	cub->map_width = map_width(file);
 	cub->map_height = map_height(file);
+	if (cub->map_width == 0 || cub->map_height == 0)
+		ft_error(cub, NULL, "Map not found!\n", -1);
 	cub->map = (char **)malloc(sizeof(char *) * (cub->map_height + 1));
 	if (!cub->map)
 		return (0);

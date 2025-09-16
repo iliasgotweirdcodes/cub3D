@@ -6,7 +6,7 @@
 /*   By: ilel-hla <ilel-hla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 16:25:27 by ilel-hla          #+#    #+#             */
-/*   Updated: 2025/09/07 18:39:51 by ilel-hla         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:38:05 by ilel-hla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,4 +106,18 @@ char	*ft_strtrim(char *s1, char *set)
 		end--;
 	result = ft_substr(s1, start, end - start);
 	return (result);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
+		i++;
+	}
+	return (0);
 }

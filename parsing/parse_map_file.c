@@ -6,7 +6,7 @@
 /*   By: ilel-hla <ilel-hla@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 16:25:21 by ilel-hla          #+#    #+#             */
-/*   Updated: 2025/09/08 23:46:03 by ilel-hla         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:46:27 by ilel-hla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ int	parse_texture(t_cub *cub, char *line, char *id, int fd)
 	if (!trim)
 		ft_error(cub, NULL, "Failed to allocate memory for texture\n", fd);
 	dst = NULL;
-	if (ft_strncmp(id, "NO", 2) == 0)
+	if (ft_strlen(id) == 2 && ft_strncmp(id, "NO", 2) == 0)
 		dst = &cub->no_texture;
-	else if (ft_strncmp(id, "SO", 2) == 0)
+	else if (ft_strlen(id) == 2 && ft_strncmp(id, "SO", 2) == 0)
 		dst = &cub->so_texture;
-	else if (ft_strncmp(id, "WE", 2) == 0)
+	else if (ft_strlen(id) == 2 && ft_strncmp(id, "WE", 2) == 0)
 		dst = &cub->we_texture;
-	else if (ft_strncmp(id, "EA", 2) == 0)
+	else if (ft_strlen(id) == 2 && ft_strncmp(id, "EA", 2) == 0)
 		dst = &cub->ea_texture;
 	else
 	{
@@ -140,14 +140,25 @@ int	check_config(t_cub *cub, char *line, int fd)
 	return (0);
 }
 
+int validate_configs(t_cub *cub)
+{
+    if (!cub->no_texture || !cub->so_texture || !cub->we_texture || !cub->ea_texture)
+        return (0);
+    if (cub->floor_color == -1 || cub->ceiling_color == -1)
+        return (0);
+    return (1);
+}
+
 int	parse_cfg(t_cub *cub, int fd)
 {
 	int		count = 0;
 	char	*line;
 	char	*tmp;
+	int		found_line = 0;
 
 	while ((line = get_next_line(fd)))
 	{
+		found_line = 1;
 		tmp = line;
 		while (*tmp == ' ' || *tmp == '\t')
 			tmp++;
@@ -157,6 +168,11 @@ int	parse_cfg(t_cub *cub, int fd)
 		{
 			if (check_config(cub, line, fd))
 				count++;
+			else
+			{
+				free(line);
+				ft_error(cub, NULL, "Invalid config line\n", fd);
+			}
 			free(line);
 		}
 		else if (get_cfg_type(tmp))
@@ -164,7 +180,9 @@ int	parse_cfg(t_cub *cub, int fd)
 		else
 			free(line);
 	}
-	if (count != 6)
+	if (!found_line)
+		ft_error(cub, NULL, "The map is empty\n", fd);
+	if (count != 6 || !validate_configs(cub))
 		ft_error(cub, NULL, "Invalid or missing configuration\n", fd);
 	return (1);
 }
